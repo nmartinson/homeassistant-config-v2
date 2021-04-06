@@ -338,382 +338,570 @@ views:
                         id: id_on
                     template: quick_toggle_btn
                     type: 'custom:button-card'
-                  - aspect_ratio: 1/1
-                    entity: sensor.avg_house_temp
-                    show_icon: true
-                    show_name: false
-                    show_state: true
-                    styles:
-                      card:
-                        - background-color: |
-                            [[[
-                              if (entity.state <= 17) return '#32B76F';
-                              if (entity.state <= 20) return '#FFC80F';
-                              if (entity.state >= 20) return '#FF7309';
-                            ]]]
-                        - color: white
-                      icon:
-                        - color: white
-                      state:
-                        - margin-top: '-10px'
-                        - padding-bottom: 10px
-                    type: 'custom:button-card'
-                  - icon: 'mdi:home'
-                    styles:
-                      card:
-                        - background-color: |
-                            [[[
-                              var awaymode_state = (states['input_boolean.away_mode'].state);
-                              var guestmode_state = (states['input_boolean.guest_mode'].state);
-                              var homework_state = (states['input_boolean.work_from_home_mode'].state);
-                              if (awaymode_state == "on") return '#0DD58C';
-                              if (guestmode_state == "on") return '#0DD58C';
-                              if (homework_state == "on") return '#0DD58C';
-                            ]]]
-                      icon:
-                        - color: |
-                            [[[
-                              var awaymode_state = (states['input_boolean.away_mode'].state);
-                              var guestmode_state = (states['input_boolean.guest_mode'].state);
-                              var homework_state = (states['input_boolean.work_from_home_mode'].state);
-                              if (awaymode_state == "on") return 'white';
-                              if (guestmode_state == "on") return 'white';
-                              if (homework_state == "on") return 'white';
-                            ]]]
-                    tap_action:
-                      action: call-service
-                      service: browser_mod.popup
-                      service_data:
-                        card:
-                          cards:
-                            - custom_fields:
-                                s2: '&nbsp'
-                              entity: input_boolean.away_mode
-                              template:
-                                - standard_btn_layout
-                                - standard_btn_states
-                                - standard_btn_states_on
-                                - switch_btn
-                              type: 'custom:button-card'
-                            - custom_fields:
-                                s2: '&nbsp'
-                              entity: input_boolean.guest_mode
-                              template:
-                                - standard_btn_layout
-                                - standard_btn_states
-                                - standard_btn_states_on
-                                - switch_btn
-                              type: 'custom:button-card'
-                            - custom_fields:
-                                s2: '&nbsp'
-                              entity: input_boolean.work_from_home_mode
-                              template:
-                                - standard_btn_layout
-                                - standard_btn_states
-                                - standard_btn_states_on
-                                - switch_btn
-                              type: 'custom:button-card'
-                          type: horizontal-stack
-                        deviceID:
-                          - this
-                        title: Home Modes
-                    template: quick_toggle_btn
-                    type: 'custom:button-card'
-                  - color_type: icon
-                    icon: 'mdi:face'
-                    tap_action:
-                      action: call-service
-                      service: browser_mod.popup
-                      service_data:
-                        card:
-                          cards:
-                            - cards:
-                                - aspect_ratio: 2/1
-                                  entity: person.dave
-                                  layout: name_state
-                                  show_name: true
-                                  show_state: true
-                                  styles:
-                                    card: null
-                                    icon:
-                                      - width: 80%
-                                      - height: 80%
-                                    state:
-                                      - font-size: 85%
-                                  tap_action:
-                                    action: more-info
-                                  type: 'custom:button-card'
-                                - aspect_ratio: 2/1
-                                  entity: person.cat
-                                  layout: name_state
-                                  show_name: true
-                                  show_state: true
-                                  styles:
-                                    card: null
-                                    icon:
-                                      - width: 80%
-                                      - height: 80%
-                                    state:
-                                      - font-size: 85%
-                                  tap_action:
-                                    action: more-info
-                                  type: 'custom:button-card'
-                              type: horizontal-stack
-                            - entities:
-                                - entity: person.dave
-                                - entity: person.cat
-                              hours_to_show: 72
-                              refresh_interval: 0
-                              type: history-graph
-                            - dark_mode: true
-                              entities:
-                                - entity: person.dave
-                                - entity: person.cat
-                              hours_to_show: 72
-                              type: map
-                          type: vertical-stack
-                        deviceID:
-                          - this
-                        style:
-                          padding: null
-                        title: Person Overview
-                    template: quick_toggle_btn
-                    type: 'custom:button-card'
-              - aspect_ratio: 1/1
-                custom_fields:
-                  s2: '&nbsp'
-                entity: alarm_control_panel.ha_alarm
-                name: Alarm
-                show_name: true
-                show_state: true
-                state:
-                  - icon: 'mdi:shield'
-                    styles:
-                      icon:
-                        - filter: grayscale(100%)
-                        - filter: opacity(30%)
-                    value: disarmed
-                  - icon: 'mdi:shield-home'
-                    styles:
-                      card:
-                        - background-color: '#45aaf2'
-                      icon:
-                        - color: white
-                    value: armed_home
-                  - icon: 'mdi:shield-home'
-                    styles:
-                      card:
-                        - background-color: '#40445a'
-                      icon:
-                        - color: white
-                    value: armed_night
-                  - icon: 'mdi:shield-lock'
-                    styles:
-                      card:
-                        - background-color: '#f44336'
-                      icon:
-                        - color: white
-                    value: armed_away
-                  - icon: 'mdi:shield-key-outline'
-                    styles:
-                      card:
-                        - background-color: white
-                      icon:
-                        - color: black
-                        - animation: blink 2s ease infinite
-                    value: arming
-                  - icon: 'mdi:shield-alert-outline'
-                    styles:
-                      card:
-                        - background-color: '#f44336'
-                      icon:
-                        - color: white
-                        - animation: blink 1s ease infinite
-                    value: triggered
-                tap_action:
-                  action: call-service
-                  service: browser_mod.popup
-                  service_data:
-                    card:
-                      cards:
-                        - card:
-                            entity: alarm_control_panel.ha_alarm
-                            tap_action:
-                              action: call-service
-                              service: script.alarm_disarm
-                            template:
-                              - overview_alarm_btn_armed
-                            type: 'custom:button-card'
-                          conditions:
-                            - entity: alarm_control_panel.ha_alarm
-                              state_not: disarmed
-                          type: conditional
-                        - card:
-                            color: '#45aaf2'
-                            color_type: icon
-                            icon: 'mdi:shield-home'
-                            name: Home
-                            tap_action:
-                              action: call-service
-                              service: alarm_control_panel.alarm_arm_home
-                              service_data:
-                                entity_id: alarm_control_panel.ha_alarm
-                            template:
-                              - overview_alarm_btn_disarmed
-                            type: 'custom:button-card'
-                          conditions:
-                            - entity: binary_sensor.bedtime
-                              state: 'off'
-                            - entity: alarm_control_panel.ha_alarm
-                              state: disarmed
-                          type: conditional
-                        - card:
-                            color: '#40445a'
-                            color_type: icon
-                            icon: 'mdi:shield-home'
-                            name: Night
-                            tap_action:
-                              action: call-service
-                              service: alarm_control_panel.alarm_arm_night
-                              service_data:
-                                entity_id: alarm_control_panel.ha_alarm
-                            template:
-                              - overview_alarm_btn_disarmed
-                            type: 'custom:button-card'
-                          conditions:
-                            - entity: binary_sensor.bedtime
-                              state: 'on'
-                            - entity: alarm_control_panel.ha_alarm
-                              state: disarmed
-                          type: conditional
-                        - card:
-                            color: '#f44336'
-                            color_type: icon
-                            icon: 'mdi:shield-lock'
-                            name: Away
-                            tap_action:
-                              action: call-service
-                              service: alarm_control_panel.alarm_arm_away
-                              service_data:
-                                entity_id: alarm_control_panel.ha_alarm
-                            template:
-                              - overview_alarm_btn_disarmed
-                            type: 'custom:button-card'
-                          conditions:
-                            - entity: alarm_control_panel.ha_alarm
-                              state: disarmed
-                          type: conditional
-                      type: horizontal-stack
-                    deviceID:
-                      - this
-                    title: Alarm Modes
-                    type: horizontal-stack
-                template:
-                  - standard_btn_layout
-                type: 'custom:button-card'
-              - type: grid
-                columns: 2
-                cards:
-                  - entity: input_boolean.toothbrush_time_input
-                    state:
-                      - icon: 'mdi:tooth'
-                        id: id_off
-                    template: quick_toggle_btn
-                    type: 'custom:button-card'
-                  - entity: input_boolean.bathtime_input
-                    state:
-                      - icon: 'mdi:water-pump-off'
-                        id: id_off
-                    template: quick_toggle_btn
-                    type: 'custom:button-card'
-                  - icon: 'mdi:youtube-tv'
-                    tap_action:
-                      action: navigate
-                      navigation_path: /lovelace/media
-                    template: quick_toggle_btn
-                    type: 'custom:button-card'
-                  - aspect_ratio: 1/1
-                    variables:
-                      active_speaker: |
-                        [[[ 
-                          return (states['input_text.active_speaker'].state) 
-                        ]]]
-                    custom_fields:
-                      media_state: |
-                        [[[
-                          var active_speaker_state = (states[variables.active_speaker].state);
-                          if (active_speaker_state === 'paused') return `<ha-icon icon="mdi:play"></ha-icon>`;   
-                          else if (active_speaker_state === 'playing') return  `<ha-icon icon="mdi:pause"></ha-icon>`; 
-                          else return;
-                        ]]]
-                    entity_picture: >-
-                      [[[ return
-                      (states[variables.active_speaker].attributes.entity_picture);
-                      ]]]
-                    icon: 'mdi:music'
-                    show_entity_picture: true
-                    show_name: false
-                    show_state: false
-                    styles:
-                      card:
-                        - padding: 0px
-                      grid:
-                        - grid-template-areas: '"i" "media_state"'
-                        - grid-template-rows: 100%
-                        - grid-template-columns: 100%
-                      entity_picture:
-                        - align-items: center
-                        - justify-content: center
-                        - width: 100%
-                        - opacity: 0.8
-                        - transform: scale(1.8)
-                      custom_fields:
-                        media_state:
-                          - color: white
-                          - opacity: 0.7
-                          - margin-top: '-100%'
-                          - transform: scale(0.5)
-                    tap_action:
-                      action: navigate
-                      navigation_path: /lovelace/music
-                    type: 'custom:button-card'
-                    triggers_update: all
-          - backdrop:
-              night: '#40445a'
-            entity: weather.dark_sky
-            name: ' '
-            styles: null
-            type: 'custom:simple-weather-card'
+                  # - aspect_ratio: 1/1
+                  #   entity: sensor.avg_house_temp
+                  #   show_icon: true
+                  #   show_name: false
+                  #   show_state: true
+                  #   styles:
+                  #     card:
+                  #       - background-color: |
+                  #           [[[
+                  #             if (entity.state <= 17) return '#32B76F';
+                  #             if (entity.state <= 20) return '#FFC80F';
+                  #             if (entity.state >= 20) return '#FF7309';
+                  #           ]]]
+                  #       - color: white
+                  #     icon:
+                  #       - color: white
+                  #     state:
+                  #       - margin-top: '-10px'
+                  #       - padding-bottom: 10px
+                  #   type: 'custom:button-card'
+          #         - icon: 'mdi:home'
+          #           styles:
+          #             card:
+          #               - background-color: |
+          #                   [[[
+          #                     var awaymode_state = (states['input_boolean.away_mode'].state);
+          #                     var guestmode_state = (states['input_boolean.guest_mode'].state);
+          #                     var homework_state = (states['input_boolean.work_from_home_mode'].state);
+          #                     if (awaymode_state == "on") return '#0DD58C';
+          #                     if (guestmode_state == "on") return '#0DD58C';
+          #                     if (homework_state == "on") return '#0DD58C';
+          #                   ]]]
+          #             icon:
+          #               - color: |
+          #                   [[[
+          #                     var awaymode_state = (states['input_boolean.away_mode'].state);
+          #                     var guestmode_state = (states['input_boolean.guest_mode'].state);
+          #                     var homework_state = (states['input_boolean.work_from_home_mode'].state);
+          #                     if (awaymode_state == "on") return 'white';
+          #                     if (guestmode_state == "on") return 'white';
+          #                     if (homework_state == "on") return 'white';
+          #                   ]]]
+          #           tap_action:
+          #             action: call-service
+          #             service: browser_mod.popup
+          #             service_data:
+          #               card:
+          #                 cards:
+          #                   - custom_fields:
+          #                       s2: '&nbsp'
+          #                     entity: input_boolean.away_mode
+          #                     template:
+          #                       - standard_btn_layout
+          #                       - standard_btn_states
+          #                       - standard_btn_states_on
+          #                       - switch_btn
+          #                     type: 'custom:button-card'
+          #                   - custom_fields:
+          #                       s2: '&nbsp'
+          #                     entity: input_boolean.guest_mode
+          #                     template:
+          #                       - standard_btn_layout
+          #                       - standard_btn_states
+          #                       - standard_btn_states_on
+          #                       - switch_btn
+          #                     type: 'custom:button-card'
+          #                   - custom_fields:
+          #                       s2: '&nbsp'
+          #                     entity: input_boolean.work_from_home_mode
+          #                     template:
+          #                       - standard_btn_layout
+          #                       - standard_btn_states
+          #                       - standard_btn_states_on
+          #                       - switch_btn
+          #                     type: 'custom:button-card'
+          #                 type: horizontal-stack
+          #               deviceID:
+          #                 - this
+          #               title: Home Modes
+          #           template: quick_toggle_btn
+          #           type: 'custom:button-card'
+          #         - color_type: icon
+          #           icon: 'mdi:face'
+          #           tap_action:
+          #             action: call-service
+          #             service: browser_mod.popup
+          #             service_data:
+          #               card:
+          #                 cards:
+          #                   - cards:
+          #                       - aspect_ratio: 2/1
+          #                         entity: person.dave
+          #                         layout: name_state
+          #                         show_name: true
+          #                         show_state: true
+          #                         styles:
+          #                           card: null
+          #                           icon:
+          #                             - width: 80%
+          #                             - height: 80%
+          #                           state:
+          #                             - font-size: 85%
+          #                         tap_action:
+          #                           action: more-info
+          #                         type: 'custom:button-card'
+          #                       - aspect_ratio: 2/1
+          #                         entity: person.cat
+          #                         layout: name_state
+          #                         show_name: true
+          #                         show_state: true
+          #                         styles:
+          #                           card: null
+          #                           icon:
+          #                             - width: 80%
+          #                             - height: 80%
+          #                           state:
+          #                             - font-size: 85%
+          #                         tap_action:
+          #                           action: more-info
+          #                         type: 'custom:button-card'
+          #                     type: horizontal-stack
+          #                   - entities:
+          #                       - entity: person.dave
+          #                       - entity: person.cat
+          #                     hours_to_show: 72
+          #                     refresh_interval: 0
+          #                     type: history-graph
+          #                   - dark_mode: true
+          #                     entities:
+          #                       - entity: person.dave
+          #                       - entity: person.cat
+          #                     hours_to_show: 72
+          #                     type: map
+          #                 type: vertical-stack
+          #               deviceID:
+          #                 - this
+          #               style:
+          #                 padding: null
+          #               title: Person Overview
+          #           template: quick_toggle_btn
+          #           type: 'custom:button-card'
+          #     - aspect_ratio: 1/1
+          #       custom_fields:
+          #         s2: '&nbsp'
+          #       entity: alarm_control_panel.ha_alarm
+          #       name: Alarm
+          #       show_name: true
+          #       show_state: true
+          #       state:
+          #         - icon: 'mdi:shield'
+          #           styles:
+          #             icon:
+          #               - filter: grayscale(100%)
+          #               - filter: opacity(30%)
+          #           value: disarmed
+          #         - icon: 'mdi:shield-home'
+          #           styles:
+          #             card:
+          #               - background-color: '#45aaf2'
+          #             icon:
+          #               - color: white
+          #           value: armed_home
+          #         - icon: 'mdi:shield-home'
+          #           styles:
+          #             card:
+          #               - background-color: '#40445a'
+          #             icon:
+          #               - color: white
+          #           value: armed_night
+          #         - icon: 'mdi:shield-lock'
+          #           styles:
+          #             card:
+          #               - background-color: '#f44336'
+          #             icon:
+          #               - color: white
+          #           value: armed_away
+          #         - icon: 'mdi:shield-key-outline'
+          #           styles:
+          #             card:
+          #               - background-color: white
+          #             icon:
+          #               - color: black
+          #               - animation: blink 2s ease infinite
+          #           value: arming
+          #         - icon: 'mdi:shield-alert-outline'
+          #           styles:
+          #             card:
+          #               - background-color: '#f44336'
+          #             icon:
+          #               - color: white
+          #               - animation: blink 1s ease infinite
+          #           value: triggered
+          #       tap_action:
+          #         action: call-service
+          #         service: browser_mod.popup
+          #         service_data:
+          #           card:
+          #             cards:
+          #               - card:
+          #                   entity: alarm_control_panel.ha_alarm
+          #                   tap_action:
+          #                     action: call-service
+          #                     service: script.alarm_disarm
+          #                   template:
+          #                     - overview_alarm_btn_armed
+          #                   type: 'custom:button-card'
+          #                 conditions:
+          #                   - entity: alarm_control_panel.ha_alarm
+          #                     state_not: disarmed
+          #                 type: conditional
+          #               - card:
+          #                   color: '#45aaf2'
+          #                   color_type: icon
+          #                   icon: 'mdi:shield-home'
+          #                   name: Home
+          #                   tap_action:
+          #                     action: call-service
+          #                     service: alarm_control_panel.alarm_arm_home
+          #                     service_data:
+          #                       entity_id: alarm_control_panel.ha_alarm
+          #                   template:
+          #                     - overview_alarm_btn_disarmed
+          #                   type: 'custom:button-card'
+          #                 conditions:
+          #                   - entity: binary_sensor.bedtime
+          #                     state: 'off'
+          #                   - entity: alarm_control_panel.ha_alarm
+          #                     state: disarmed
+          #                 type: conditional
+          #               - card:
+          #                   color: '#40445a'
+          #                   color_type: icon
+          #                   icon: 'mdi:shield-home'
+          #                   name: Night
+          #                   tap_action:
+          #                     action: call-service
+          #                     service: alarm_control_panel.alarm_arm_night
+          #                     service_data:
+          #                       entity_id: alarm_control_panel.ha_alarm
+          #                   template:
+          #                     - overview_alarm_btn_disarmed
+          #                   type: 'custom:button-card'
+          #                 conditions:
+          #                   - entity: binary_sensor.bedtime
+          #                     state: 'on'
+          #                   - entity: alarm_control_panel.ha_alarm
+          #                     state: disarmed
+          #                 type: conditional
+          #               - card:
+          #                   color: '#f44336'
+          #                   color_type: icon
+          #                   icon: 'mdi:shield-lock'
+          #                   name: Away
+          #                   tap_action:
+          #                     action: call-service
+          #                     service: alarm_control_panel.alarm_arm_away
+          #                     service_data:
+          #                       entity_id: alarm_control_panel.ha_alarm
+          #                   template:
+          #                     - overview_alarm_btn_disarmed
+          #                   type: 'custom:button-card'
+          #                 conditions:
+          #                   - entity: alarm_control_panel.ha_alarm
+          #                     state: disarmed
+          #                 type: conditional
+          #             type: horizontal-stack
+          #           deviceID:
+          #             - this
+          #           title: Alarm Modes
+          #           type: horizontal-stack
+          #       template:
+          #         - standard_btn_layout
+          #       type: 'custom:button-card'
+          #     - type: grid
+          #       columns: 2
+          #       cards:
+          #         - entity: input_boolean.toothbrush_time_input
+          #           state:
+          #             - icon: 'mdi:tooth'
+          #               id: id_off
+          #           template: quick_toggle_btn
+          #           type: 'custom:button-card'
+          #         - entity: input_boolean.bathtime_input
+          #           state:
+          #             - icon: 'mdi:water-pump-off'
+          #               id: id_off
+          #           template: quick_toggle_btn
+          #           type: 'custom:button-card'
+          #         - icon: 'mdi:youtube-tv'
+          #           tap_action:
+          #             action: navigate
+          #             navigation_path: /lovelace/media
+          #           template: quick_toggle_btn
+          #           type: 'custom:button-card'
+          #         - aspect_ratio: 1/1
+          #           variables:
+          #             active_speaker: |
+          #               [[[ 
+          #                 return (states['input_text.active_speaker'].state) 
+          #               ]]]
+          #           custom_fields:
+          #             media_state: |
+          #               [[[
+          #                 var active_speaker_state = (states[variables.active_speaker].state);
+          #                 if (active_speaker_state === 'paused') return `<ha-icon icon="mdi:play"></ha-icon>`;   
+          #                 else if (active_speaker_state === 'playing') return  `<ha-icon icon="mdi:pause"></ha-icon>`; 
+          #                 else return;
+          #               ]]]
+          #           entity_picture: >-
+          #             [[[ return
+          #             (states[variables.active_speaker].attributes.entity_picture);
+          #             ]]]
+          #           icon: 'mdi:music'
+          #           show_entity_picture: true
+          #           show_name: false
+          #           show_state: false
+          #           styles:
+          #             card:
+          #               - padding: 0px
+          #             grid:
+          #               - grid-template-areas: '"i" "media_state"'
+          #               - grid-template-rows: 100%
+          #               - grid-template-columns: 100%
+          #             entity_picture:
+          #               - align-items: center
+          #               - justify-content: center
+          #               - width: 100%
+          #               - opacity: 0.8
+          #               - transform: scale(1.8)
+          #             custom_fields:
+          #               media_state:
+          #                 - color: white
+          #                 - opacity: 0.7
+          #                 - margin-top: '-100%'
+          #                 - transform: scale(0.5)
+          #           tap_action:
+          #             action: navigate
+          #             navigation_path: /lovelace/music
+          #           type: 'custom:button-card'
+          #           triggers_update: all
+          # - backdrop:
+          #     night: '#40445a'
+          #   entity: weather.dark_sky
+          #   name: ' '
+          #   styles: null
+          #   type: 'custom:simple-weather-card'
           - type: grid
             cards:
               - custom_fields:
-                  s2: |
-                    [[[
-                      var sensor_state = (states['binary_sensor.0x00158d00045ee3ea_contact'].state);
-                      if (sensor_state == "on") return "Window is open";
-                      else return "Window is closed" 
-                    ]]]
-                entity: light.lounge
+                entity: light.living_room_lights
                 hold_action:
                   action: navigate
                   navigation_path: ../lovelace-views/lounge
                 icon: |
-                  [[[ 
-                    var sensor_state = (states['binary_sensor.0x00158d00045ee3ea_contact'].state);
-                    if (sensor_state == "on") 
-                      return "mdi:window-open"; 
-                    else 
-                      return "mdi:sofa" 
+                  [[[   
+                    return "mdi:sofa" 
                   ]]]
-                name: Lounge
+                name: Living Room
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - light_btn
+                type: 'custom:button-card'
+              - custom_fields:
+                entity: light.nick_s_desk
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:desk" 
+                  ]]]
+                name: Nicks Desk
                 template:
                   - standard_btn_layout
                   - standard_btn_states
                   - standard_btn_states_on
                   - light_btn
                 triggers_update:
-                  - binary_sensor.0x00158d00045ee3ea_contact
+                  - light.nick_s_desk
                 type: 'custom:button-card'
+              - custom_fields:
+                entity: light.angelina_s_desk
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:desk" 
+                  ]]]
+                name: Angelinas Desk
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - light_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: switch.fence_lights
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:lightbulb-outline" 
+                  ]]]
+                name: Fence Lights
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: switch.purifier
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:air-purifier" 
+                  ]]]
+                name: Air Purifier
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: switch.rad_charger_1
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:bicycle-electric" 
+                  ]]]
+                name: Rad Charger 1
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: switch.rad_charger_2
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:bicycle-electric" 
+                  ]]]
+                name: Rad Charger 2
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: switch.garage_opener
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:garage" 
+                  ]]]
+                name: Garage Opener
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: switch.plants
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:sprout" 
+                  ]]]
+                name: Plant Light
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                  s2: |
+                    [[[
+                      if (entity.state == "on") return "Washer is running";
+                      else return "Washer is not running";
+                    ]]]
+                entity: input_boolean.washer_switch
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:washing-machine" 
+                  ]]]
+                name: Washing Machine
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                type: 'custom:button-card'
+
+              - custom_fields:
+                  s2: |
+                    [[[
+                      if (entity.state == "on") return "Guest mode is on";
+                      else return "Guest mode is off";
+                    ]]]
+                entity: input_boolean.guest_mode_switch
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:account" 
+                  ]]]
+                name: Guest Mode
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                type: 'custom:button-card'
+
+              - custom_fields:
+                  s2: |
+                    [[[
+                      if (entity.state == "on") return "TV is on";
+                      else return "TV is off";
+                    ]]]
+                entity: switch.living_room
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:television" 
+                  ]]]
+                name: TV
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                type: 'custom:button-card'
+
               - custom_fields:
                   s2: |
                     [[[
@@ -851,32 +1039,7 @@ views:
                 triggers_update:
                   - sensor.esp_dev_02_bme280_temperature
                 type: 'custom:button-card'
-              - custom_fields:
-                  s2: '&nbsp'
-                entity: switch.sonoff2
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/dining-room
-                name: Wall Light
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - switch_btn
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: '&nbsp'
-                entity: switch.owl_light
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/girls-room
-                name: Owl Light
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - switch_btn
-                type: 'custom:button-card'
+              
               - custom_fields:
                   s2: |
                     [[[
@@ -1362,6 +1525,10 @@ views:
           type: vertical-stack
         title: Heating
     title: Main
+
+
+
+
   - badges: []
     cards:
       - type: 'custom:stack-in-card'
@@ -1580,6 +1747,10 @@ views:
                 volume: false
               idle_view: when_idle
               info: scroll
+
+
+
+
     icon: 'mdi:music'
     path: music
     title: Music
@@ -1679,6 +1850,11 @@ views:
             info: scroll
             type: 'custom:mini-media-player'
         type: vertical-stack
+
+
+
+
+
     icon: 'mdi:youtube-tv'
     path: media
     title: Media
@@ -1686,24 +1862,32 @@ views:
     cards:
       - cards:
           - aspect_ratio: 0%
-            camera_image: camera.camera_bedroom
+            camera_image: camera.blink_backyard
             camera_view: live
             entities: []
             image: >-
               https://www.home-assistant.io/images/merchandise/shirt-frontpage.png
-            title: Bedroom Camera
+            title: Backyard Camera
             type: picture-glance
           - aspect_ratio: 0%
-            camera_image: camera.camera_diningroom
+            camera_image: camera.blink_blink_driveway
             camera_view: live
             entities: []
             image: >-
               https://www.home-assistant.io/images/merchandise/shirt-frontpage.png
-            title: Dining Room Camera
+            title: Doorbell Camera
+            type: picture-glance
+          - aspect_ratio: 0%
+            camera_image: camera.front_door
+            camera_view: live
+            entities: []
+            image: >-
+              https://www.home-assistant.io/images/merchandise/shirt-frontpage.png
+            title: Driveway Camera
             type: picture-glance
           - entities:
-              - entity: binary_sensor.0x00158d000420b592_contact
-                name: Front Door
+              - entity: lock.garage_door
+                name: Garage Door
               - entity: binary_sensor.0x00158d00040e7281_contact
                 name: Kitchen Door
               - entity: binary_sensor.xiaomi_windowsensor_dining_room_contact
