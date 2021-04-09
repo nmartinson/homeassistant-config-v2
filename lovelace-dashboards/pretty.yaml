@@ -101,6 +101,101 @@ button_card_templates:
       ]]]
     tap_action:
       action: toggle
+
+
+  weather_btn:
+    color_type: card
+    show_label: true
+    show_name: true
+    show_state: true
+    tap_action:
+      action: more-info
+  weather_btn_layout:
+    aspect_ratio: 1/1
+    size: 70%
+    styles:
+      card:
+        - background-color: |
+            [[[
+              if (states['sun.sun'].state == "below_horizon")
+                return "#40445a";
+              return "#45aaf2";
+            ]]]
+      custom_fields:
+        s2:
+          - justify-self: start
+          - margin-left: 10%
+          - padding-bottom: 5%
+          - font-size: 10pt
+          - color: white
+      grid:
+        - grid-template-areas: '"i l" "s s" "n n" "s2 s2"'
+        - grid-template-columns: 1fr 1fr
+        - grid-template-rows: 1fr auto auto auto
+      icon:
+        - color: white
+      label:
+        - justify-self: start
+        - color: white
+      name:
+        - justify-self: start
+        - margin-left: 10%
+        - font-size: 10pt
+        - color: white
+      state:
+        - justify-self: start
+        - margin-left: 10%
+        - font-weight: bold
+        - color: white
+
+
+  half_btn:
+    aspect_ratio: 2/1
+    show_name: true
+    show_state: true
+    styles:
+      grid:
+        - grid-template-areas: '"i n" "i s" '
+        - grid-template-rows: 50%
+        - grid-template-columns: 50% 50%
+      card:
+        - border-radius: 0
+        - box-shadow: none
+      icon:
+        - width: 50%
+      state:
+        - font-size: 10pt
+        - justify-self: start
+        - margin-left: 10%
+        - margin-bottom: 10px
+      name:
+        - justify-self: start
+        - margin-left: 10%
+        - font-weight: bold
+        - padding: 0
+        - margin-top: 10px
+    state:
+      - value: not_home
+        styles:
+          icon:
+            - filter: grayscale(100%)
+            - filter: opacity(30%)
+          label:
+            - filter: opacity(30%)
+          name:
+            - filter: opacity(30%)
+          state:
+            - filter: opacity(30%)
+      - value: home
+        styles:
+          card:
+            - background-color: '#4CAF50'
+            - color: white
+          icon:
+            - color: white
+          state:
+            - color: white
+
   overview_alarm_btn_armed:
     aspect_ratio: 4/1
     label: Tap to Disarm
@@ -324,7 +419,8 @@ title: House
 views:
   - badges: []
     cards:
-      - cards:
+      - type:
+        cards:
           - type: grid
             cards:
               - type: grid
@@ -684,8 +780,111 @@ views:
           #   name: ' '
           #   styles: null
           #   type: 'custom:simple-weather-card'
+          
           - type: grid
             cards:
+              - aspect_ratio: 1/1
+                custom_fields:
+                  top_btn:
+                    card:
+                      type: 'custom:button-card'
+                      aspect_ratio: 2/1
+                      entity: device_tracker.nicks_iphone
+                      name: Nick
+                      template:
+                        - half_btn
+                  bottom_btn:
+                    card:
+                      type: 'custom:button-card'
+                      entity: device_tracker.goobers_phone
+                      name: Angelina
+                      template:
+                        - half_btn
+                styles:
+                  grid:
+                    - grid-template-areas: '"top_btn" "bottom_btn"'
+                    - grid-template-rows: 50% 50%
+                    - grid-template-columns: 100%
+                  card:
+                    - padding: 0
+                    - margin: 0
+                type: 'custom:button-card'
+                columns: 3
+                square: true
+
+        
+
+              # - custom_fields:
+              #     s2: |
+              #       [[[
+              #         var bbag_state = (states['sensor.garbage'].state);
+              #         var bbag_days = (states['sensor.garbage'].attributes.days);
+              #         if (bbag_state == "0") return "Garbage Today";
+              #         if (bbag_state == "1") return "Garbage Tomorrow";
+              #         if (bbag_state == "2") {
+              #           if (bbag_days <= 3) return "Garbage in " + bbag_days + " Days";
+              #           else return "Unknown"
+              #         }
+              #       ]]]
+              #   name: |
+              #     [[[
+              #       var bbag_state = (states['sensor.garbage'].state);
+              #       var bbag_days = (states['sensor.garbage'].attributes.days);
+              #       var recycle_sensor = (states['sensor.recycling'].state);
+              #       var recycle_days = (states['sensor.recycling'].attributes.days);
+              #       if ((bbag_days <= 3) && (recycle_sensor == "2" || recycle_sensor == "1")) return "Garbage";
+              #       else return "Recycling" 
+              #     ]]]
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../calendar
+              #   icon: |
+              #     [[[ 
+              #       var bbag_state = (states['sensor.garbage'].state);
+              #       var bbag_days = (states['sensor.garbage'].attributes.days);
+              #       var recycle_sensor = (states['sensor.recycling'].state);
+              #       var recycle_days = (states['sensor.recycling'].attributes.days);
+              #       if ((bbag_days <= 3) && (recycle_sensor == "2" || recycle_sensor == "1"))
+              #         return "mdi:trash-can-outline"; 
+              #       else 
+              #         return "mdi:recycle" 
+              #     ]]]
+              #   state_display: |
+              #     [[[
+              #       var recycle_sensor = (states['sensor.recycling'].state);
+              #       var recycle_days = (states['sensor.recycling'].attributes.days);
+              #       if (recycle_sensor == "0") return "Recycling Today";
+              #       if (recycle_sensor == "1") return "Recycling Tomorrow";
+              #       if (recycle_sensor == "2") {
+              #         if (recycle_days <= 3) return "Recycling in " + recycle_days + " Days";
+              #         else return "Unknown"
+              #       }
+              #     ]]]
+              #   show_state: true
+              #   styles:
+              #     card:
+              #       - background-color: |
+              #           [[[
+              #             var bbag_days = (states['sensor.garbage'].attributes.days);
+              #             var recycle_sensor = (states['sensor.recycling'].state);
+              #             if ((bbag_days <= 3) && (recycle_sensor == "2" || recycle_sensor == "1"))
+              #               return "#212121";
+              #             return "#4CAF50";
+              #           ]]]
+              #       - color: white
+              #     icon:
+              #       - color: white
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #   triggers_update:
+              #     - sensor.garbage
+              #     - sensor.recycling
+                  
+              #   type: 'custom:button-card'
+
+
               - custom_fields:
                 entity: light.living_room_lights
                 hold_action:
@@ -846,6 +1045,8 @@ views:
                       else return "Washer is not running";
                     ]]]
                 entity: input_boolean.washer_switch
+                tap_action:
+                  action: null
                 hold_action:
                   action: navigate
                   navigation_path: ../lovelace-views/lounge
@@ -905,33 +1106,32 @@ views:
               - custom_fields:
                   s2: |
                     [[[
-                      var temp = states['sensor.heating_heating_2'].state;
-                      return 'Heating at ' + temp + '%';
+                      var humidity = states['sensor.hallway_humidity'].state;
+                      return 'Humidity at ' + humidity + '%';
                     ]]]
-                entity: climate.heating
-                entity_picture: /local/tado_thermostat.svg
+                entity: climate.hallway
                 label: |
                   [[[
-                    var temp = states['climate.heating'].attributes.current_temperature;
-                    return '' + (temp ? temp : '0.0') + '°C';
+                    var temp = states['climate.hallway'].attributes.current_temperature;
+                    return '' + (temp ? temp : '0.0') + '°F';
                   ]]]
-                name: Heating
+                name: Thermostat
                 show_entity_picture: true
                 state_display: |
                   [[[ 
-                    var target_temp = states['sensor.heating_target_temp'].state;
-                    if (entity.state == "auto") return "Auto target " + target_temp + "°C";
-                    if (entity.state == "heat") return "Heating to " + target_temp + "°C";
+                    var target_temp = states['climate.hallway'].attributes.temperature;
+                    if (entity.state == "off") return "Furnace is off";
+                    if (entity.state == "heat") return "Heat set to " + target_temp + "°F";
                     else return "" 
                   ]]]
                 styles:
                   card:
                     - background-color: |
                         [[[
-                          var target_temp = states['sensor.heating_target_temp'].state;
-                          if (target_temp <= 18.0) return '#32B76F';
-                          if (target_temp => 18.1) return '#FFC80F';
-                          if (target_temp => 20.0) return '#FF7309';
+                          var target_temp = states['climate.hallway'].attributes.temperature;
+                          if (target_temp <= 65) return '#32B76F';
+                          if (target_temp => 66) return '#FFC80F';
+                          if (target_temp => 70.0) return '#FF7309';
                         ]]]
                 template:
                   - standard_btn_layout
@@ -941,318 +1141,312 @@ views:
                   - sensor.heating_target_temp
                   - sensor.heating_heating_2
                 type: 'custom:button-card'
-              - custom_fields:
-                  s2: |
-                    [[[
-                      var sensor_state = (states['binary_sensor.xiaomi_windowsensor_dining_room_contact'].state);
-                      if (sensor_state == "on") return "Window is open";
-                      else return "Window is closed" 
-                    ]]]
-                entity: light.dining_room
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/dining-room
-                icon: |
-                  [[[ 
-                    var sensor_state = (states['binary_sensor.xiaomi_windowsensor_dining_room_contact'].state);
-                    if (sensor_state == "on") 
-                      return "mdi:window-open"; 
-                    else 
-                      return "mdi:table-chair" 
-                  ]]]
-                label: |
-                  [[[
-                    var temp = states['sensor.esp_dev_03_am2302_temperature'].state;
-                    return '' + (temp ? temp : '0.0') + '°C';
-                  ]]]
-                name: Dining Room
-                show_label: true
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - light_btn
-                triggers_update:
-                  - sensor.dining_room_temperature
-                  - binary_sensor.xiaomi_windowsensor_dining_room_contact
-                  - sensor.esp_dev_03_am2302_temperature
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: |
-                    [[[
-                      var harmonystate = states['sensor.harmony_activity'].state;
-                      if (harmonystate == "PowerOff") return "&nbsp";
-                      else return harmonystate;
-                    ]]]
-                entity: light.wled
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/lounge
-                icon: |
-                  [[[
-                    if (entity.state == "on") 
-                      return "mdi:television-ambient-light"; 
-                    else 
-                      return "mdi:television" 
-                  ]]]
-                name: TV Backlight
-                state_display: |
-                  [[[ 
-                    var bri = Math.round(entity.attributes.brightness / 2.55);
-                    if (entity.state == "on")
-                    {
-                    if (states["switch.wled_lor"].state == "on") {
-                      return "Hyperion active";
-                    }
-                    else return "Light on at " + bri + "%";
-                    }
-                    else if (entity.state == "unavailable") return "Unavailable";
-                    else return "Light is off";
-                  ]]]
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - switch_btn
-                triggers_update:
-                  - sensor.harmony_activity
-                  - switch.wled_lor
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: '&nbsp'
-                entity: light.master_bedroom
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/master-bedroom
-                label: |
-                  [[[
-                    var temp = states['sensor.esp_dev_02_bme280_temperature'].state;
-                    return '' + (temp ? temp : '0.0') + '°C';
-                  ]]]
-                name: Bedroom
-                show_label: true
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - light_btn
-                triggers_update:
-                  - sensor.esp_dev_02_bme280_temperature
-                type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: |
+              #       [[[
+              #         var sensor_state = (states['binary_sensor.xiaomi_windowsensor_dining_room_contact'].state);
+              #         if (sensor_state == "on") return "Window is open";
+              #         else return "Window is closed" 
+              #       ]]]
+              #   entity: light.dining_room
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/dining-room
+              #   icon: |
+              #     [[[ 
+              #       var sensor_state = (states['binary_sensor.xiaomi_windowsensor_dining_room_contact'].state);
+              #       if (sensor_state == "on") 
+              #         return "mdi:window-open"; 
+              #       else 
+              #         return "mdi:table-chair" 
+              #     ]]]
+              #   label: |
+              #     [[[
+              #       var temp = states['sensor.esp_dev_03_am2302_temperature'].state;
+              #       return '' + (temp ? temp : '0.0') + '°C';
+              #     ]]]
+              #   name: Dining Room
+              #   show_label: true
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - light_btn
+              #   triggers_update:
+              #     - sensor.dining_room_temperature
+              #     - binary_sensor.xiaomi_windowsensor_dining_room_contact
+              #     - sensor.esp_dev_03_am2302_temperature
+              #   type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: |
+              #       [[[
+              #         var harmonystate = states['sensor.harmony_activity'].state;
+              #         if (harmonystate == "PowerOff") return "&nbsp";
+              #         else return harmonystate;
+              #       ]]]
+              #   entity: light.wled
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/lounge
+              #   icon: |
+              #     [[[
+              #       if (entity.state == "on") 
+              #         return "mdi:television-ambient-light"; 
+              #       else 
+              #         return "mdi:television" 
+              #     ]]]
+              #   name: TV Backlight
+              #   state_display: |
+              #     [[[ 
+              #       var bri = Math.round(entity.attributes.brightness / 2.55);
+              #       if (entity.state == "on")
+              #       {
+              #       if (states["switch.wled_lor"].state == "on") {
+              #         return "Hyperion active";
+              #       }
+              #       else return "Light on at " + bri + "%";
+              #       }
+              #       else if (entity.state == "unavailable") return "Unavailable";
+              #       else return "Light is off";
+              #     ]]]
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - switch_btn
+              #   triggers_update:
+              #     - sensor.harmony_activity
+              #     - switch.wled_lor
+              #   type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: '&nbsp'
+              #   entity: light.master_bedroom
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/master-bedroom
+              #   label: |
+              #     [[[
+              #       var temp = states['sensor.esp_dev_02_bme280_temperature'].state;
+              #       return '' + (temp ? temp : '0.0') + '°C';
+              #     ]]]
+              #   name: Bedroom
+              #   show_label: true
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - light_btn
+              #   triggers_update:
+              #     - sensor.esp_dev_02_bme280_temperature
+              #   type: 'custom:button-card'
               
-              - custom_fields:
-                  s2: |
-                    [[[
-                      var temp = states['sensor.girls_room_heating'].state;
-                      return 'Heating at ' + temp + '%';
-                    ]]]
-                entity: climate.girls_room
-                entity_picture: /local/tado_radiator_horizontal.svg
-                label: |
-                  [[[
-                    var temp = states['climate.girls_room'].attributes.current_temperature;
-                    return '' + (temp ? temp : '0.0') + '°C';
-                  ]]]
-                name: Girls Room
-                show_entity_picture: true
-                state_display: |
-                  [[[ 
-                    var target_temp = states['sensor.girlsroom_target_temp'].state;
-                    if (entity.state == "auto") return "Auto target " + target_temp + "°C";
-                    if (entity.state == "heat") return "Heating to " + target_temp + "°C";
-                    else return "" 
-                  ]]]
-                styles:
-                  card:
-                    - background-color: |
-                        [[[
-                          var target_temp = states['sensor.girlsroom_target_temp'].state;
-                          if (target_temp <= 18.0) return '#32B76F';
-                          if (target_temp => 18.1) return '#FFC80F';
-                          if (target_temp => 20.0) return '#FF7309';
-                        ]]]
-                template:
-                  - standard_btn_layout
-                  - climate_btn
-                  - climate_btn_states
-                triggers_update:
-                  - sensor.girlsroom_target_temp
-                  - sensor.girls_room_heating
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: |
-                    [[[
-                      var sensor_state = (states['binary_sensor.0x00158d00045c1506_contact'].state);
-                      if (sensor_state == "on") return "Window is open";
-                      else return "Window is closed" 
-                    ]]]
-                entity: light.kitchen
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/kitchen
-                icon: |
-                  [[[ 
-                    var sensor_state_window = (states['binary_sensor.0x00158d00045c1506_contact'].state);
-                    var sensor_state_door = (states['binary_sensor.0x00158d00040e7281_contact'].state);
-                    if (sensor_state_door == "on") 
-                      return "mdi:door-open";
-                    if (sensor_state_window == "on") 
-                      return "mdi:window-open";
-                    else 
-                      return "mdi:food-variant" 
-                  ]]]
-                name: Kitchen
-                show_label: false
-                show_state: true
-                state_display: |
-                  [[[
-                    var sensor_state = (states['binary_sensor.0x00158d00040e7281_contact'].state);
-                    if (sensor_state == "on") return "Door is open";
-                    else return "Door is closed" 
-                  ]]]
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - light_btn
-                triggers_update:
-                  - binary_sensor.0x00158d00045c1506_contact
-                  - binary_sensor.0x00158d00040e7281_contact
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: |
-                    [[[
-                      var sensor_state = (states['binary_sensor.0x00158d000420b592_contact'].state);
-                      if (sensor_state == "on") return "Door is open";
-                      else return "Door is closed" 
-                    ]]]
-                double_tap_action:
-                  action: more-info
-                entity: light.front_door
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/front_door
-                icon: |
-                  [[[ 
-                    var sensor_state = (states['binary_sensor.0x00158d000420b592_contact'].state);
-                    if (sensor_state == "on") 
-                      return "mdi:door-open"; 
-                    else 
-                      return "mdi:door" 
-                  ]]]
-                name: Front Door
-                state_display: |
-                  [[[ 
-                    var bri = Math.round(entity.attributes.brightness / 2.55);
-                    if (entity.state == "on") return "Lights on at " + bri + "%";
-                    else return "Lights are off" 
-                  ]]]
-                tap_action:
-                  action: toggle
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - light_btn
-                triggers_update:
-                  - binary_sensor.0x00158d000420b592_contact
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: |
-                    [[[
-                      var motion_sensor_state = (states['binary_sensor.bathroom_sensor_motion'].state);
-                      var window_sensor_state = (states['binary_sensor.xiaomi_windowsensor_bathroom_contact'].state);
-                      if (motion_sensor_state == "on") return "Motion detected";
-                      if (window_sensor_state == "on") return "Window is open";
-                      else return "Window is closed"
-                    ]]]
-                entity: light.bathroom
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/bathroom
-                icon: |
-                  [[[ 
-                    var motion_sensor_state = (states['binary_sensor.bathroom_sensor_motion'].state);
-                    var window_sensor_state = (states['binary_sensor.xiaomi_windowsensor_bathroom_contact'].state);
-                    if (motion_sensor_state == "on") return "mdi:motion-sensor";     
-                    if (window_sensor_state == "on") return "mdi:window-open"; 
-                    else return "mdi:toilet" 
-                  ]]]
-                label: |
-                  [[[
-                    var temp = states['sensor.bathroom_sensor_temperature'].state;
-                    return '' + (temp ? temp : '0.0') + '°C';
-                  ]]]
-                name: Bathroom
-                show_label: true
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - light_btn
-                triggers_update:
-                  - sensor.bathroom_sensor_temperature
-                  - binary_sensor.bathroom_sensor_motion
-                  - binary_sensor.xiaomi_windowsensor_bathroom_contact
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: '&nbsp'
-                entity: light.landing
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/landing
-                name: Landing
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - light_btn
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: '&nbsp'
-                entity: light.spare_bedroom
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/spare-room
-                name: Spare Room
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - light_btn
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: '&nbsp'
-                entity: light.office
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/office
-                label: |
-                  [[[
-                    var temp = states['sensor.esp_dev_01_bme280_temperature'].state;
-                    if (temp == "unavailable") { return "0 °C" }
-                    else return '' + (temp ? temp : '0.0') + '°C';
-                  ]]]
-                name: Office
-                show_label: true
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - light_btn
-                triggers_update:
-                  - sensor.esp_dev_01_bme280_temperature
-                type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: |
+              #       [[[
+              #         var temp = states['sensor.girls_room_heating'].state;
+              #         return 'Heating at ' + temp + '%';
+              #       ]]]
+              #   entity: climate.girls_room
+              #   entity_picture: /local/tado_radiator_horizontal.svg
+              #   label: |
+              #     [[[
+              #       var temp = states['climate.girls_room'].attributes.current_temperature;
+              #       return '' + (temp ? temp : '0.0') + '°C';
+              #     ]]]
+              #   name: Girls Room
+              #   show_entity_picture: true
+              #   state_display: |
+              #     [[[ 
+              #       var target_temp = states['sensor.girlsroom_target_temp'].state;
+              #       if (entity.state == "auto") return "Auto target " + target_temp + "°C";
+              #       if (entity.state == "heat") return "Heating to " + target_temp + "°C";
+              #       else return "" 
+              #     ]]]
+              #   styles:
+              #     card:
+              #       - background-color: |
+              #           [[[
+              #             var target_temp = states['sensor.girlsroom_target_temp'].state;
+              #             if (target_temp <= 18.0) return '#32B76F';
+              #             if (target_temp => 18.1) return '#FFC80F';
+              #             if (target_temp => 20.0) return '#FF7309';
+              #           ]]]
+              #   template:
+              #     - standard_btn_layout
+              #     - climate_btn
+              #     - climate_btn_states
+              #   triggers_update:
+              #     - sensor.girlsroom_target_temp
+              #     - sensor.girls_room_heating
+              #   type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: |
+              #       [[[
+              #         var sensor_state = (states['binary_sensor.0x00158d00045c1506_contact'].state);
+              #         if (sensor_state == "on") return "Window is open";
+              #         else return "Window is closed" 
+              #       ]]]
+              #   entity: light.kitchen
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/kitchen
+              #   icon: |
+              #     [[[ 
+              #       var sensor_state_window = (states['binary_sensor.0x00158d00045c1506_contact'].state);
+              #       var sensor_state_door = (states['binary_sensor.0x00158d00040e7281_contact'].state);
+              #       if (sensor_state_door == "on") 
+              #         return "mdi:door-open";
+              #       if (sensor_state_window == "on") 
+              #         return "mdi:window-open";
+              #       else 
+              #         return "mdi:food-variant" 
+              #     ]]]
+              #   name: Kitchen
+              #   show_label: false
+              #   show_state: true
+              #   state_display: |
+              #     [[[
+              #       var sensor_state = (states['binary_sensor.0x00158d00040e7281_contact'].state);
+              #       if (sensor_state == "on") return "Door is open";
+              #       else return "Door is closed" 
+              #     ]]]
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - light_btn
+              #   triggers_update:
+              #     - binary_sensor.0x00158d00045c1506_contact
+              #     - binary_sensor.0x00158d00040e7281_contact
+              #   type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: |
+              #       [[[
+              #         var sensor_state = (states['binary_sensor.0x00158d000420b592_contact'].state);
+              #         if (sensor_state == "on") return "Door is open";
+              #         else return "Door is closed" 
+              #       ]]]
+              #   double_tap_action:
+              #     action: more-info
+              #   entity: light.front_door
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/front_door
+              #   icon: |
+              #     [[[ 
+              #       var sensor_state = (states['binary_sensor.0x00158d000420b592_contact'].state);
+              #       if (sensor_state == "on") 
+              #         return "mdi:door-open"; 
+              #       else 
+              #         return "mdi:door" 
+              #     ]]]
+              #   name: Front Door
+              #   state_display: |
+              #     [[[ 
+              #       var bri = Math.round(entity.attributes.brightness / 2.55);
+              #       if (entity.state == "on") return "Lights on at " + bri + "%";
+              #       else return "Lights are off" 
+              #     ]]]
+              #   tap_action:
+              #     action: toggle
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - light_btn
+              #   triggers_update:
+              #     - binary_sensor.0x00158d000420b592_contact
+              #   type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: |
+              #       [[[
+              #         var motion_sensor_state = (states['binary_sensor.bathroom_sensor_motion'].state);
+              #         var window_sensor_state = (states['binary_sensor.xiaomi_windowsensor_bathroom_contact'].state);
+              #         if (motion_sensor_state == "on") return "Motion detected";
+              #         if (window_sensor_state == "on") return "Window is open";
+              #         else return "Window is closed"
+              #       ]]]
+              #   entity: light.bathroom
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/bathroom
+              #   icon: |
+              #     [[[ 
+              #       var motion_sensor_state = (states['binary_sensor.bathroom_sensor_motion'].state);
+              #       var window_sensor_state = (states['binary_sensor.xiaomi_windowsensor_bathroom_contact'].state);
+              #       if (motion_sensor_state == "on") return "mdi:motion-sensor";     
+              #       if (window_sensor_state == "on") return "mdi:window-open"; 
+              #       else return "mdi:toilet" 
+              #     ]]]
+              #   label: |
+              #     [[[
+              #       var temp = states['sensor.bathroom_sensor_temperature'].state;
+              #       return '' + (temp ? temp : '0.0') + '°C';
+              #     ]]]
+              #   name: Bathroom
+              #   show_label: true
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - light_btn
+              #   triggers_update:
+              #     - sensor.bathroom_sensor_temperature
+              #     - binary_sensor.bathroom_sensor_motion
+              #     - binary_sensor.xiaomi_windowsensor_bathroom_contact
+              #   type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: '&nbsp'
+              #   entity: light.landing
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/landing
+              #   name: Landing
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - light_btn
+              #   type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: '&nbsp'
+              #   entity: light.spare_bedroom
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/spare-room
+              #   name: Spare Room
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - light_btn
+              #   type: 'custom:button-card'
+              # - custom_fields:
+              #     s2: '&nbsp'
+              #   entity: light.office
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/office
+              #   label: |
+              #     [[[
+              #       var temp = states['sensor.esp_dev_01_bme280_temperature'].state;
+              #       if (temp == "unavailable") { return "0 °C" }
+              #       else return '' + (temp ? temp : '0.0') + '°C';
+              #     ]]]
+              #   name: Office
+              #   show_label: true
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - light_btn
+              #   triggers_update:
+              #     - sensor.esp_dev_01_bme280_temperature
+              #   type: 'custom:button-card'
               - type: grid
-                columns: 2
+                columns: 1
                 cards:
-                  - entity: switch.gaming_pc
-                    template:
-                      - small_btn_layout
-                      - standard_btn_states
-                      - standard_btn_states_on
-                    type: 'custom:button-card'
-                  - entity: switch.homenas
+                  - entity: switch.synner_security_status
                     icon: 'mdi:nas'
                     tap_action:
                       action: call-service
@@ -1263,48 +1457,48 @@ views:
                             - card: null
                               entities:
                                 - entities:
-                                    - entity: sensor.glances_free
+                                    - entity: sensor.synner_security_status
                                       name: Free
-                                    - entity: sensor.glances_used
+                                    - entity: sensor.synner_volume_1_used_space
                                       name: Used
-                                  entity: sensor.glances_used_percent
+                                  entity: sensor.synner_update_available
                                   name: OS
                                   state_header: '% Used'
                                   type: 'custom:multiple-entity-row'
                                 - entities:
                                     - entity: >-
-                                        sensor.glances_srv_dev_disk_by_label_data_free
+                                        sensor.synner_update_available
                                       name: Free
                                     - entity: >-
-                                        sensor.glances_srv_dev_disk_by_label_data_used
+                                        sensor.synner_update_available
                                       name: Used
                                   entity: >-
-                                    sensor.glances_srv_dev_disk_by_label_data_used_percent
+                                    sensor.synner_update_available
                                   name: Data
                                   state_header: '% Used'
                                   type: 'custom:multiple-entity-row'
                                 - entities:
                                     - entity: >-
-                                        sensor.glances_srv_dev_disk_by_label_primaryraid_free
+                                        sensor.synner_update_available
                                       name: Free
                                     - entity: >-
-                                        sensor.glances_srv_dev_disk_by_label_primaryraid_used
+                                        sensor.synner_update_available
                                       name: Used
                                   entity: >-
-                                    sensor.glances_srv_dev_disk_by_label_primaryraid_used_percent
+                                    sensor.synner_update_available
                                   name: RAID
                                   state_header: '% Used'
                                   type: 'custom:multiple-entity-row'
                               icon: 'mdi:server'
-                              title: Homenas
+                              title: Synner
                               type: entities
                             - align_header: left
                               align_icon: left
                               card: null
                               entities:
-                                - entity: sensor.glances_cpu_used
+                                - entity: sensor.synner_update_available
                                   name: CPU
-                                - entity: sensor.glances_ram_used_percent
+                                - entity: sensor.synner_update_available
                                   name: RAM
                               lower_bound: 0
                               name: Performance
@@ -1322,7 +1516,7 @@ views:
                               align_icon: left
                               card: null
                               entities:
-                                - entity: sensor.glances_core_0_temp
+                                - entity: sensor.synner_update_available
                                   name: Core Temp
                               show:
                                 average: true
@@ -1349,110 +1543,7 @@ views:
                       - standard_btn_states
                       - standard_btn_states_on
                     type: 'custom:button-card'
-              - custom_fields:
-                  s2: |
-                    [[[
-                      var bbag_state = (states['sensor.black_bag'].state);
-                      var bbag_days = (states['sensor.black_bag'].attributes.days);
-                      var recycle_sensor = (states['sensor.recycling'].state);
-                      var recycle_days = (states['sensor.recycling'].attributes.days);
-                      if (bbag_days => 7) return "Black Bag in " + bbag_days + " Days";
-                      else {
-                        if (recycle_sensor == "0") return "Recycling Today";
-                        else if (recycle_sensor == "1") return "Recycling Tomorrow";
-                        else return "Recycling in " + recycle_days + " Days"; 
-                      }
-                    ]]]
-                name: |
-                  [[[
-                    var bbag_state = (states['sensor.black_bag'].state);
-                    var bbag_days = (states['sensor.black_bag'].attributes.days);
-                    var recycle_sensor = (states['sensor.recycling'].state);
-                    var recycle_days = (states['sensor.recycling'].attributes.days);
-                    if ((bbag_days <= 7) && (recycle_sensor == "2" || recycle_sensor == "1")) return "Black Bag";
-                    else return "Recycling" 
-                  ]]]
-                hold_action:
-                  action: navigate
-                  navigation_path: ../calendar
-                icon: |
-                  [[[ 
-                    var bbag_state = (states['sensor.black_bag'].state);
-                    var bbag_days = (states['sensor.black_bag'].attributes.days);
-                    var recycle_sensor = (states['sensor.recycling'].state);
-                    var recycle_days = (states['sensor.recycling'].attributes.days);
-                    if ((bbag_days <= 7) && (recycle_sensor == "2" || recycle_sensor == "1"))
-                      return "mdi:trash-can-outline"; 
-                    else 
-                      return "mdi:recycle" 
-                  ]]]
-                label: |
-                  [[[
-                    var temp = states['climate.heating'].attributes.current_temperature;
-                    return '' + (temp ? temp : '0.0') + '°C';
-                  ]]]
-                state_display: |
-                  [[[
-                    var bbag_state = (states['sensor.black_bag'].state);
-                    var bbag_days = (states['sensor.black_bag'].attributes.days);
-                    var recycle_sensor = (states['sensor.recycling'].state);
-                    var recycle_days = (states['sensor.recycling'].attributes.days);
-                    if ((bbag_state == "0") || (recycle_sensor == "0")) return "Collect Today";
-                    if ((bbag_state == "1") || (recycle_sensor == "1")) return "Collect Tomorrow";
-                    if ((bbag_state == "2") || (recycle_sensor == "2")) {
-                      if (bbag_days <= 7) return "Collect in " + bbag_days + " Days";
-                      else if (recycle_days <= 7) return "Collect in " + recycle_days + " Days";
-                      else return "Unknown"
-                    }
-                  ]]]
-                show_state: true
-                show_label: false
-                styles:
-                  card:
-                    - background-color: |
-                        [[[
-                          var bbag_days = (states['sensor.black_bag'].attributes.days);
-                          var recycle_sensor = (states['sensor.recycling'].state);
-                          if ((bbag_days <= 7) && (recycle_sensor == "2" || recycle_sensor == "1"))
-                            return "#212121";
-                          return "#4CAF50";
-                        ]]]
-                    - color: white
-                  icon:
-                    - color: white
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                triggers_update:
-                  - sensor.garden_waste
-                  - sensor.recycling
-                type: 'custom:button-card'
-              - custom_fields:
-                  s2: |
-                    [[[
-                      if (entity.state == "on") 
-                      return "Speed " + (states['input_text.dyson_fan_speed'].state);
-                      else return "&nbsp" 
-                    ]]]
-                entity: fan.dyson_fan
-                icon: 'mdi:fan'
-                name: Dyson Fan
-                state:
-                  - icon: 'mdi:power'
-                    value: 'off'
-                  - icon: 'mdi:fan'
-                    spin: true
-                    value: 'on'
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - animated_btn_states_on
-                  - switch_btn
-                type: 'custom:button-card'
-              - aspect_ratio: 1/1
-                color_type: blank-card
-                type: 'custom:button-card'
+              
         type: vertical-stack
     icon: 'mdi:home'
     panel: false

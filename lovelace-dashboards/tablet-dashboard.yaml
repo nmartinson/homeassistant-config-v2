@@ -962,11 +962,11 @@ views:
                 - custom_fields:
                     s2: |
                       [[[
-                        var bbag_state = (states['sensor.black_bag'].state);
-                        var bbag_days = (states['sensor.black_bag'].attributes.days);
+                        var bbag_state = (states['sensor.garbage'].state);
+                        var bbag_days = (states['sensor.garbage'].attributes.days);
                         var recycle_sensor = (states['sensor.recycling'].state);
                         var recycle_days = (states['sensor.recycling'].attributes.days);
-                        if (bbag_days => 7) return "Black Bag in " + bbag_days + " Days";
+                        if (bbag_days => 7) return "Garbage in " + bbag_days + " Days";
                         else {
                           if (recycle_sensor == "0") return "Recycling Today";
                           else if (recycle_sensor == "1") return "Recycling Tomorrow";
@@ -975,11 +975,11 @@ views:
                       ]]]
                   name: |
                     [[[
-                      var bbag_state = (states['sensor.black_bag'].state);
-                      var bbag_days = (states['sensor.black_bag'].attributes.days);
+                      var bbag_state = (states['sensor.garbage'].state);
+                      var bbag_days = (states['sensor.garbage'].attributes.days);
                       var recycle_sensor = (states['sensor.recycling'].state);
                       var recycle_days = (states['sensor.recycling'].attributes.days);
-                      if ((bbag_days <= 7) && (recycle_sensor == "2" || recycle_sensor == "1")) return "Black Bag";
+                      if ((bbag_days <= 7) && (recycle_sensor == "2" || recycle_sensor == "1")) return "Garbage";
                       else return "Recycling" 
                     ]]]
                   hold_action:
@@ -987,8 +987,8 @@ views:
                     navigation_path: ../calendar
                   icon: |
                     [[[ 
-                      var bbag_state = (states['sensor.black_bag'].state);
-                      var bbag_days = (states['sensor.black_bag'].attributes.days);
+                      var bbag_state = (states['sensor.garbage'].state);
+                      var bbag_days = (states['sensor.garbage'].attributes.days);
                       var recycle_sensor = (states['sensor.recycling'].state);
                       var recycle_days = (states['sensor.recycling'].attributes.days);
                       if ((bbag_days <= 7) && (recycle_sensor == "2" || recycle_sensor == "1"))
@@ -1003,8 +1003,8 @@ views:
                     ]]]
                   state_display: |
                     [[[
-                      var bbag_state = (states['sensor.black_bag'].state);
-                      var bbag_days = (states['sensor.black_bag'].attributes.days);
+                      var bbag_state = (states['sensor.garbage'].state);
+                      var bbag_days = (states['sensor.garbage'].attributes.days);
                       var recycle_sensor = (states['sensor.recycling'].state);
                       var recycle_days = (states['sensor.recycling'].attributes.days);
                       if ((bbag_state == "0") || (recycle_sensor == "0")) return "Collect Today";
@@ -1021,7 +1021,7 @@ views:
                     card:
                       - background-color: |
                           [[[
-                            var bbag_days = (states['sensor.black_bag'].attributes.days);
+                            var bbag_days = (states['sensor.garbage'].attributes.days);
                             var recycle_sensor = (states['sensor.recycling'].state);
                             if ((bbag_days <= 7) && (recycle_sensor == "2" || recycle_sensor == "1"))
                               return "#212121";
