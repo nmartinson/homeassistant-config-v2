@@ -148,6 +148,108 @@ button_card_templates:
         - font-weight: bold
         - color: white
 
+  round_badge_state_layout:
+    show_state: true
+    show_icon: false
+    show_label: true
+    show_units: false
+    styles:
+      grid:
+        - grid-template-areas: '"s" "n" "l"'
+        - grid-template-rows: 1fr min-content min-content
+        - grid-template-columns: 1fr
+      card:
+        - height: 125px
+        - background-color: transparent
+        - box-shadow: none
+        - border-radius: 0
+      state:
+        - width: 60px
+        - height: 60px
+        - border-radius: 50%
+        - border: '2px solid #717171'
+        - display: 'var(--ha-icon-display, inline-flex)'
+        - align-items: center
+        - justify-content: center
+        - position: relative
+        - vertical-align: middle
+        - color: '#f3f2f2'
+      name:
+        - width: 100%
+        - font-size: 0.9em
+        - color: '#f3f2f2'
+      label:
+        - width: 100%
+        - font-size: 0.8em
+        - color: '#f3f2f2'
+  round_badge_icon_layout:
+    show_state: true
+    styles:
+      card:
+        - height: 125px
+        - background-color: transparent
+        - box-shadow: none
+        - border-radius: 0
+      img_cell:
+        - width: 64px
+        - height: 64px
+        - border-radius: 50%
+      icon:
+        - width: 50%
+      name:
+        - width: 100%
+        - font-size: 0.9em
+      state:
+        - width: 100%
+        - font-size: 0.8em
+  round_badge_icon_states:
+    state:
+      - id: id_off
+        value: 'off'
+        styles:
+          img_cell:
+            - border: '2px solid #717171'
+            - width: 60px
+            - height: 60px
+      - id: id_on
+        value: 'on'
+        styles:
+          img_cell:
+            - background: 'rgb(233,233,233)'
+            - background: >-
+                linear-gradient(0deg, rgba(233,233,233,0.8) 0%,
+                rgba(233,233,233,1) 100%)
+          name:
+            - color: '#f3f2f2'
+          state:
+            - color: '#f3f2f2'
+  round_blink_icon_states:
+    state:
+      - id: armed
+        value: 'armed_away'
+        styles:
+          img_cell:
+            - background: 'rgb(69,165,74)'
+            - background: >-
+                linear-gradient(0deg, rgba(69,165,74,0.8) 0%,
+                rgba(69,165,74,1) 100%)
+          name:
+            - color: '#ffffff'
+          state:
+            - color: '#ffffff'
+      - id: disarmed
+        value: 'disarmed'
+        styles:
+          img_cell:
+            - background: 'rgb(253,25,29)'
+            - background: >-
+                linear-gradient(0deg, rgba(253,25,29,0.8) 0%,
+                rgba(253,25,29,1) 100%)
+          name:
+            - color: '#ffffff'
+          state:
+            - color: '#ffffff'
+
 
   half_btn:
     aspect_ratio: 2/1
@@ -423,17 +525,87 @@ views:
         cards:
           - type: grid
             cards:
-              - type: grid
-                columns: 2
-                cards:
-                  - entity: light.all_lights
-                    state:
-                      - icon: 'mdi:lightbulb-off'
-                        id: id_off
-                      - icon: 'mdi:lightbulb-on'
-                        id: id_on
-                    template: quick_toggle_btn
-                    type: 'custom:button-card'
+              - variables:
+                  current_lights_on: |
+                    [[[ 
+                      return (states['sensor.current_lights_on'].state) 
+                    ]]]
+                entity: light.all_lights
+                state:
+                  - icon: 'mdi:lightbulb-off'
+                    id: id_off
+                  - icon: 'mdi:lightbulb-on'
+                    id: id_on
+                type: 'custom:button-card'
+                name: |
+                  [[[
+                    if (variables.current_lights_on >= 2) return variables.current_lights_on + " Lights";   
+                    else if (variables.current_lights_on == 1) return variables.current_lights_on + " Light"; 
+                    else return "All Lights";
+                  ]]]
+                template:
+                  - round_badge_icon_layout
+                  - round_badge_icon_states
+
+              - entity: climate.hallway
+                type: 'custom:button-card'
+                name: Nest
+                label: '&nbsp;'
+                template:
+                  - round_badge_state_layout
+
+              - custom_fields:
+                entity: lock.garage_door
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                template:
+                  - round_badge_icon_layout
+                  - round_badge_icon_states
+                  - switch_btn
+                name: Garage
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: input_boolean.guest_mode_switch
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:account" 
+                  ]]]
+                name: Guests
+                template:
+                  - round_badge_icon_layout
+                  - round_badge_icon_states
+                  - switch_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: alarm_control_panel.blink_home
+                name: Blink
+                hold_action:
+                  service: script.toggle_blink
+                tap_action:
+                  action: call-service
+                  service: script.toggle_blink
+                template:
+                  - round_badge_icon_layout
+                  - round_blink_icon_states
+                type: 'custom:button-card'
+            columns: 5
+            square: true
+
+
+          - type: grid
+            cards:
+              - type: weather-forecast
+                entity: weather.openweathermap
+                show_forecast: false
+            square: false
+            columns: 1
+
                   # - aspect_ratio: 1/1
                   #   entity: sensor.avg_house_temp
                   #   show_icon: true
@@ -774,13 +946,8 @@ views:
           #             navigation_path: /lovelace/music
           #           type: 'custom:button-card'
           #           triggers_update: all
-          # - backdrop:
-          #     night: '#40445a'
-          #   entity: weather.dark_sky
-          #   name: ' '
-          #   styles: null
-          #   type: 'custom:simple-weather-card'
-          
+
+              
           - type: grid
             cards:
               - aspect_ratio: 1/1
@@ -812,7 +979,7 @@ views:
                 columns: 3
                 square: true
 
-        
+
 
               # - custom_fields:
               #     s2: |
@@ -884,6 +1051,42 @@ views:
                   
               #   type: 'custom:button-card'
 
+              # - custom_fields:
+              #   entity: blink
+              #   hold_action:
+              #     action: navigate
+              #     navigation_path: ../lovelace-views/lounge
+              #   icon: |
+              #     [[[   
+              #       return "mdi:sofa" 
+              #     ]]]
+              #   name: Blink
+              #   template:
+              #     - standard_btn_layout
+              #     - standard_btn_states
+              #     - standard_btn_states_on
+              #     - light_btn
+              #   type: 'custom:button-card'
+
+              - type: custom:state-switch
+                entity: binary_sensor.lumi_lumi_sensor_wleak_aq1_ias_zone
+                states:
+                  "on":
+                    type: vertical-stack
+                    cards:
+                      - entity: 
+                        styles:
+                          card:
+                          - background-color: 'rgb(253,25,29)'
+                        hold_action:
+                          action: navigate
+                          navigation_path: ../lovelace-views/lounge
+                        icon: |
+                          [[[ return "mdi:water-alert" ]]]
+                        name: Crawlspace Leak
+                        template:
+                          - standard_btn_layout
+                        type: 'custom:button-card'
 
               - custom_fields:
                 entity: light.living_room_lights
@@ -937,23 +1140,6 @@ views:
                 type: 'custom:button-card'
 
               - custom_fields:
-                entity: switch.fence_lights
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/lounge
-                icon: |
-                  [[[   
-                    return "mdi:lightbulb-outline" 
-                  ]]]
-                name: Fence Lights
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - switch_btn
-                type: 'custom:button-card'
-
-              - custom_fields:
                 entity: switch.purifier
                 hold_action:
                   action: navigate
@@ -963,57 +1149,6 @@ views:
                     return "mdi:air-purifier" 
                   ]]]
                 name: Air Purifier
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - switch_btn
-                type: 'custom:button-card'
-
-              - custom_fields:
-                entity: switch.rad_charger_1
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/lounge
-                icon: |
-                  [[[   
-                    return "mdi:bicycle-electric" 
-                  ]]]
-                name: Rad Charger 1
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - switch_btn
-                type: 'custom:button-card'
-
-              - custom_fields:
-                entity: switch.rad_charger_2
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/lounge
-                icon: |
-                  [[[   
-                    return "mdi:bicycle-electric" 
-                  ]]]
-                name: Rad Charger 2
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                  - switch_btn
-                type: 'custom:button-card'
-
-              - custom_fields:
-                entity: switch.garage_opener
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/lounge
-                icon: |
-                  [[[   
-                    return "mdi:garage" 
-                  ]]]
-                name: Garage Opener
                 template:
                   - standard_btn_layout
                   - standard_btn_states
@@ -1041,29 +1176,6 @@ views:
               - custom_fields:
                   s2: |
                     [[[
-                      if (entity.state == "on") return "Washer is running";
-                      else return "Washer is not running";
-                    ]]]
-                entity: input_boolean.washer_switch
-                tap_action:
-                  action: null
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/lounge
-                icon: |
-                  [[[   
-                    return "mdi:washing-machine" 
-                  ]]]
-                name: Washing Machine
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                type: 'custom:button-card'
-
-              - custom_fields:
-                  s2: |
-                    [[[
                       if (entity.state == "on") return "Guest mode is on";
                       else return "Guest mode is off";
                     ]]]
@@ -1076,27 +1188,6 @@ views:
                     return "mdi:account" 
                   ]]]
                 name: Guest Mode
-                template:
-                  - standard_btn_layout
-                  - standard_btn_states
-                  - standard_btn_states_on
-                type: 'custom:button-card'
-
-              - custom_fields:
-                  s2: |
-                    [[[
-                      if (entity.state == "on") return "TV is on";
-                      else return "TV is off";
-                    ]]]
-                entity: switch.living_room
-                hold_action:
-                  action: navigate
-                  navigation_path: ../lovelace-views/lounge
-                icon: |
-                  [[[   
-                    return "mdi:television" 
-                  ]]]
-                name: TV
                 template:
                   - standard_btn_layout
                   - standard_btn_states
@@ -1140,6 +1231,118 @@ views:
                 triggers_update:
                   - sensor.heating_target_temp
                   - sensor.heating_heating_2
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: switch.garage_opener
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:garage" 
+                  ]]]
+                name: Garage Opener
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
+                type: 'custom:button-card'
+                
+              - custom_fields:
+                entity: switch.fence_lights
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:lightbulb-outline" 
+                  ]]]
+                name: Fence Lights
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                  s2: |
+                    [[[
+                      if (entity.state == "on") return "TV is on";
+                      else return "TV is off";
+                    ]]]
+                entity: switch.living_room
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:television" 
+                  ]]]
+                name: TV
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                type: 'custom:button-card'
+
+              - custom_fields:
+                  s2: |
+                    [[[
+                      if (entity.state == "on") return "Washer is running";
+                      else return "Washer is not running";
+                    ]]]
+                entity: input_boolean.washer_switch
+                tap_action:
+                  action: null
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:washing-machine" 
+                  ]]]
+                name: Washing Machine
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                type: 'custom:button-card'
+                
+              - custom_fields:
+                entity: switch.rad_charger_1
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:bicycle-electric" 
+                  ]]]
+                name: Rad Charger 1
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
+                type: 'custom:button-card'
+
+              - custom_fields:
+                entity: switch.rad_charger_2
+                hold_action:
+                  action: navigate
+                  navigation_path: ../lovelace-views/lounge
+                icon: |
+                  [[[   
+                    return "mdi:bicycle-electric" 
+                  ]]]
+                name: Rad Charger 2
+                template:
+                  - standard_btn_layout
+                  - standard_btn_states
+                  - standard_btn_states_on
+                  - switch_btn
                 type: 'custom:button-card'
               # - custom_fields:
               #     s2: |
@@ -1617,234 +1820,6 @@ views:
         title: Heating
     title: Main
 
-
-
-
-  - badges: []
-    cards:
-      - type: 'custom:stack-in-card'
-        mode: vertical
-        keep:
-          background: true
-        cards:
-          - aspect_ratio: 1/1
-            variables:
-              active_speaker: |
-                [[[ 
-                  return (states['input_text.active_speaker'].state) 
-                ]]]
-            custom_fields:
-              media_state: |
-                [[[
-                  var active_speaker_state = (states[variables.active_speaker].state);
-                  if (active_speaker_state === 'paused') return `<ha-icon icon="mdi:play"></ha-icon>`;   
-                  else if (active_speaker_state === 'playing') return  `<ha-icon icon="mdi:pause"></ha-icon>`; 
-                  else return;
-                ]]]
-            entity_picture: >-
-              [[[ return
-              (states[variables.active_speaker].attributes.entity_picture); ]]]
-            icon: 'mdi:music'
-            show_entity_picture: true
-            show_name: false
-            show_state: false
-            styles:
-              card:
-                - padding: 0px
-              grid:
-                - grid-template-areas: '"i" "media_state"'
-                - grid-template-rows: 100%
-                - grid-template-columns: 100%
-              entity_picture:
-                - align-items: center
-                - justify-content: center
-                - width: 100%
-                - opacity: 0.9
-                - transform: scale(1.8)
-              custom_fields:
-                media_state:
-                  - color: white
-                  - opacity: 0.7
-                  - margin-top: '-100%'
-                  - transform: scale(0.75)
-            tap_action:
-              action: call-service
-              service: media_player.media_play_pause
-              service_data:
-                entity_id: '[[[ return variables.active_speaker ]]]'
-            type: 'custom:button-card'
-            triggers_update: all
-          - type: conditional
-            conditions:
-              - entity: media_player.all_speakers
-                state_not: 'off'
-              - entity: media_player.downstairs_speakers
-                state: 'off'
-            card:
-              type: vertical-stack
-              cards:
-                - type: 'custom:mini-media-player'
-                  entity: media_player.all_speakers
-                  hide:
-                    icon: true
-                    info: false
-                    progress: true
-                    volume: false
-                  idle_view: when_idle
-                  info: scroll
-                - type: 'custom:mini-media-player'
-                  entity: media_player.dining_room_speaker
-                  hide:
-                    icon: true
-                    controls: true
-                    info: true
-                    progress: true
-                    volume: false
-                - type: 'custom:mini-media-player'
-                  entity: media_player.lounge_speaker
-                  hide:
-                    icon: true
-                    controls: true
-                    info: true
-                    progress: true
-                    volume: false
-                - type: 'custom:mini-media-player'
-                  entity: media_player.kitchen_speaker
-                  hide:
-                    icon: true
-                    controls: true
-                    info: true
-                    progress: true
-                    volume: false
-                - type: 'custom:mini-media-player'
-                  entity: media_player.upstairs_speaker
-                  hide:
-                    icon: true
-                    controls: true
-                    info: true
-                    progress: true
-                    volume: false
-          - type: conditional
-            conditions:
-              - entity: media_player.all_speakers
-                state: 'off'
-              - entity: media_player.downstairs_speakers
-                state_not: 'off'
-            card:
-              type: vertical-stack
-              cards:
-                - type: 'custom:mini-media-player'
-                  entity: media_player.downstairs_speakers
-                  hide:
-                    icon: true
-                    info: false
-                    progress: true
-                    volume: false
-                  idle_view: when_idle
-                  info: scroll
-                - type: 'custom:mini-media-player'
-                  entity: media_player.dining_room_speaker
-                  hide:
-                    icon: true
-                    controls: true
-                    info: true
-                    progress: true
-                    volume: false
-                - type: 'custom:mini-media-player'
-                  entity: media_player.lounge_speaker
-                  hide:
-                    icon: true
-                    controls: true
-                    info: true
-                    progress: true
-                    volume: false
-                - type: 'custom:mini-media-player'
-                  entity: media_player.kitchen_speaker
-                  hide:
-                    icon: true
-                    controls: true
-                    info: true
-                    progress: true
-                    volume: false
-          - type: conditional
-            conditions:
-              - entity: media_player.dining_room_speaker
-                state_not: 'off'
-              - entity: media_player.all_speakers
-                state: 'off'
-              - entity: media_player.downstairs_speakers
-                state: 'off'
-            card:
-              type: 'custom:mini-media-player'
-              entity: media_player.dining_room_speaker
-              hide:
-                icon: true
-                info: false
-                progress: false
-                volume: false
-              idle_view: when_idle
-              info: scroll
-          - type: conditional
-            conditions:
-              - entity: media_player.lounge_speaker
-                state_not: 'off'
-              - entity: media_player.all_speakers
-                state: 'off'
-              - entity: media_player.downstairs_speakers
-                state: 'off'
-            card:
-              type: 'custom:mini-media-player'
-              entity: media_player.lounge_speaker
-              hide:
-                icon: true
-                info: false
-                progress: false
-                volume: false
-              idle_view: when_idle
-              info: scroll
-          - type: conditional
-            conditions:
-              - entity: media_player.kitchen_speaker
-                state_not: 'off'
-              - entity: media_player.all_speakers
-                state: 'off'
-              - entity: media_player.downstairs_speakers
-                state: 'off'
-            card:
-              type: 'custom:mini-media-player'
-              entity: media_player.kitchen_speaker
-              hide:
-                icon: true
-                info: false
-                progress: false
-                volume: false
-              idle_view: when_idle
-              info: scroll
-          - type: conditional
-            conditions:
-              - entity: media_player.upstairs_speaker
-                state_not: 'off'
-              - entity: media_player.all_speakers
-                state: 'off'
-              - entity: media_player.downstairs_speakers
-                state: 'off'
-            card:
-              type: 'custom:mini-media-player'
-              entity: media_player.upstairs_speaker
-              hide:
-                icon: true
-                info: false
-                progress: false
-                volume: false
-              idle_view: when_idle
-              info: scroll
-
-
-
-
-    icon: 'mdi:music'
-    path: music
-    title: Music
   - badges: []
     cards:
       - cards:
@@ -1941,17 +1916,18 @@ views:
             info: scroll
             type: 'custom:mini-media-player'
         type: vertical-stack
-
-
-
-
-
     icon: 'mdi:youtube-tv'
     path: media
     title: Media
+
+
   - badges: []
     cards:
       - cards:
+          - type: alarm-panel
+            entity: alarm_control_panel.blink_home
+            states:
+              - arm_away
           - aspect_ratio: 0%
             camera_image: camera.blink_backyard
             camera_view: live
